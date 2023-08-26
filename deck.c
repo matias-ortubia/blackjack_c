@@ -37,12 +37,49 @@ deck_t *deck_construct() {
 }
 
 void deck_destroy(deck_t *deck) {
-    size_t card_amount = deck->size + 1;
+    size_t card_amount = deck->size;
     for (size_t i = 0; i < card_amount; i++) {
         card_destroy(deck->cards[i]);
     }
     free(deck);
 }
+
+card_t *deck_pop(deck_t *deck) {
+    if (deck->size == 0) return NULL;
+
+    deck->size--;
+    
+    card_t *card = deck->cards[deck->size];
+
+    card_t **temp = realloc(deck->cards, sizeof(card_t *) * deck->size);
+    if (temp == NULL) return NULL;
+    deck->cards = temp;
+
+    return card;
+}
+
+card_t *deck_push(deck_t *deck, card_t *card) {
+    deck->size++;
+    card_t **temp = realloc(deck->cards, sizeof(card_t *) * deck->size);
+    if (temp == NULL) return NULL;
+
+    deck->cards = temp;
+    deck->cards[deck->size - 1] = card;
+
+    return card;
+}
+
+card_t *deck_peek(deck_t *deck) {
+    return deck->cards[deck->size -1];
+}
+
+bool deck_is_empty(deck_t *deck) {
+    return deck->size == 0;
+}
+
+//void deck_shuffle(deck_t *deck);
+
+
 
 void deck_show(deck_t *deck) {
     size_t card_amount = deck->size;
