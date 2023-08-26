@@ -10,6 +10,11 @@ struct card {
 
 const char *suit_names[] = { "Hearts", "Diamonds", "Clovers", "Spades" };
 
+const char *card_values[] = { 
+    "Ace", "2", "3", "4", "5", "6", "7", "8",
+    "9", "10", "J", "Q", "K" 
+};
+
 card_t *card_construct(unsigned int number, suit_t suit) {
     card_t *card = malloc(sizeof(card_t));
     if (card == NULL) return NULL;
@@ -33,5 +38,5 @@ suit_t card_get_suit(card_t *card) {
 }
 
 void card_show(card_t *card) {
-    printf("%d %s\n", card->number, suit_names[card->suit]);
+    printf("%s %s\n", card_values[card->number - 1], suit_names[card->suit]);
 }
