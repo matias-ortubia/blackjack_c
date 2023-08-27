@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <time.h>
 #include <stdio.h> 
 
 #include "card.h"
@@ -77,9 +78,17 @@ bool deck_is_empty(deck_t *deck) {
     return deck->size == 0;
 }
 
-//void deck_shuffle(deck_t *deck);
-
-
+void deck_shuffle(deck_t *deck) {
+    srand(time(NULL));
+    size_t size = deck->size;
+    size_t max_iteration = size - 1;
+    for (size_t i = 0; i < max_iteration; i++) {
+        size_t j = i + rand() / (RAND_MAX / (size - i) + 1);
+        card_t *aux = deck->cards[j];
+        deck->cards[j] = deck->cards[i];
+        deck->cards[i] = aux;
+    }
+}
 
 void deck_show(deck_t *deck) {
     size_t card_amount = deck->size;
