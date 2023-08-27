@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "card.h"
+#include "../inc/card.h"
 
 struct card {
     unsigned int number;

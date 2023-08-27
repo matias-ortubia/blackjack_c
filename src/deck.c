@@ -2,8 +2,8 @@
 #include <time.h>
 #include <stdio.h> 
 
-#include "card.h"
-#include "deck.h"
+#include "../inc/card.h"
+#include "../inc/deck.h"
 
 #define CARD_QUANTITY 52
 #define SUITS_QUANTITY 4

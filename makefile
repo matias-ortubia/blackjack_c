@@ -1,22 +1,35 @@
 CC = gcc
-CFLAGS = -std=c99 -Wall -Werror -pedantic -g
 LDFLAGS = -lm
-OBJECTS = main.o card.o deck.o
-PROGRAM = blackjack.exe
+OBJ_DIR = obj
+BIN_DIR = bin
+SRC_DIR = src
+INC_DIR = inc
+CFLAGS = -std=c99 -Wall -I$(INC_DIR) -Werror -pedantic -g
 
-all: $(PROGRAM)
+OBJECTS = $(OBJ_DIR)/main.o\
+	  $(OBJ_DIR)/card.o\
+	  $(OBJ_DIR)/deck.o\
 
-$(PROGRAM): $(OBJECTS)
-	$(CC) $(CFLAGS) $(OBJECTS) -o $(PROGRAM) $(LDFLAGS)
+TARGET = $(BIN_DIR)/blackjack.exe
 
-card.o: card.c card.h
-	$(CC) $(CFLAGS) -c card.c
+all: $(TARGET)
 
-deck.o: deck.c deck.h card.h
-	$(CC) $(CFLAGS) -c deck.c
+$(TARGET): $(OBJECTS)
+	mkdir -p $(BIN_DIR)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJECTS) -o $(TARGET) 
 
-main.o: main.c card.h
-	$(CC) $(CFLAGS) -c main.c
+$(OBJ_DIR)/card.o: $(SRC_DIR)/card.c $(INC_DIR)/card.h
+	mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/card.c -o $@
 
+$(OBJ_DIR)/deck.o: $(SRC_DIR)/deck.c $(INC_DIR)/deck.h $(INC_DIR)/card.h
+	mkdir -p $(OBK_DIR)
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/deck.c -o $@
+
+$(OBJ_DIR)/main.o: $(SRC_DIR)/main.c $(INC_DIR)/card.h
+	mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/main.c -o $@
+
+.PHONY: clean
 clean:
-	del -vf *.o $(PROGRAM)
+	rm -r $(OBJ_DIR) $(BIN_DIR)
