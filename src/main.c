@@ -2,12 +2,17 @@
 
 #include "../inc/card.h"
 #include "../inc/deck.h"
+#include "../inc/player.h"
 
-#define SHUFFLE_TEST
+//#define SHUFFLE_TEST
+#define PLAYER_TEST
 
 int main(void) {
     deck_t *deck = deck_construct();
     if (deck == NULL) return 1;
+
+    player_t *player1 = player_construct();
+    if (player1 == NULL) return 1;
 #ifdef SHOW_DECK_TEST
     deck_show(deck);
 #endif
@@ -41,7 +46,16 @@ int main(void) {
     printf("\nSe muestra el mazo de nuevo:\n");
     deck_show(deck);
 #endif
+#ifdef PLAYER_TEST
+    player_take_card(player1, deck);
+    player_take_card(player1, deck);
+    player_take_card(player1, deck);
+
+    player_show_hand(player1);
+    deck_show(deck);
+#endif
 
     deck_destroy(deck);
+    player_destroy(player1);
     return 0;
 }
