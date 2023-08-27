@@ -53,6 +53,8 @@ int main(void) {
 
     player_show_hand(player1);
     deck_show(deck);
+
+    printf("%u", player_get_points(player1));
 #endif
 
     deck_destroy(deck);
