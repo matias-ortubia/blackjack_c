@@ -24,7 +24,7 @@ $(OBJ_DIR)/card.o: $(SRC_DIR)/card.c $(INC_DIR)/card.h
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/card.c -o $@
 
 $(OBJ_DIR)/deck.o: $(SRC_DIR)/deck.c $(INC_DIR)/deck.h $(INC_DIR)/card.h
-	mkdir -p $(OBK_DIR)
+	mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/deck.c -o $@
 
 $(OBJ_DIR)/player.o: $(SRC_DIR)/player.c $(INC_DIR)/player.h $(INC_DIR)/deck.h 
