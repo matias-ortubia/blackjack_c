@@ -98,7 +98,7 @@ int main(void) {
     else if (points_player2 > points_player1) winner = player2;
 
     if (winner == NULL) printf("It's a draw!\n");
-    else printf("\n\nWinner: Player %d.\n" + player_get_num(winner));
+    else printf("\nWinner: Player %d.\n", player_get_num(winner));
 
     deck_destroy(deck);
     player_destroy(player1);
