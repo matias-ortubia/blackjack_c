@@ -4,60 +4,117 @@
 #include "../inc/deck.h"
 #include "../inc/player.h"
 
-//#define SHUFFLE_TEST
-#define PLAYER_TEST
+int get_option(char *msg);
 
 int main(void) {
     deck_t *deck = deck_construct();
     if (deck == NULL) return 1;
 
-    player_t *player1 = player_construct();
-    if (player1 == NULL) return 1;
-#ifdef SHOW_DECK_TEST
-    deck_show(deck);
-#endif
-#ifdef POP_PUSH_TEST
-    card_t *card_taken = deck_pop(deck);
-    printf("\nCarta tomada: ");
-    card_show(card_taken);
+    player_t *player1 = player_construct(1);
+    player_t *player2 = player_construct(2);
+    if (player1 == NULL || player2 == NULL) return 1;
 
-    printf("\nAhora se vuelve a mostrar el deck\n");
-    deck_show(deck);
-
-
-    printf("\nSe devuelve la carta al mazo\n");
-    deck_push(deck, card_taken);
-
-    printf("\nMuestra el mazo de nuevo:\n");
-    deck_show(deck);
-#endif
-#ifdef PEEK_TEST
-    printf("\nPeek: ");
-    card_show(deck_peek(deck));
-#endif
-#ifdef POP_UNTIL_EMPTY_TEST
-    while(!deck_is_empty(deck)) deck_pop(deck);
-    printf("%s", deck_is_empty(deck) ? "si" : "no");
-#endif
-#ifdef SHUFFLE_TEST
-    deck_show(deck);
     deck_shuffle(deck);
 
-    printf("\nSe muestra el mazo de nuevo:\n");
-    deck_show(deck);
-#endif
-#ifdef PLAYER_TEST
-    player_take_card(player1, deck);
-    player_take_card(player1, deck);
-    player_take_card(player1, deck);
+    card_t *card_taken = player_take_card(player1, deck);
+    printf("Player %d picked ", player_get_num(player1));
+    card_show(card_taken);
 
-    player_show_hand(player1);
-    deck_show(deck);
+    card_taken = player_take_card(player2, deck);
+    printf("Player %d picked ", player_get_num(player2));
+    card_show(card_taken);
 
-    printf("%u", player_get_points(player1));
-#endif
+    while (player_get_points(player1) <= 21 && 
+           player_get_points(player2) <= 21 && 
+          (player_is_still_playing(player1) || 
+           player_is_still_playing(player2))) {
+
+        if (player_is_still_playing(player1)) {
+            printf("\nPlayer %u turn.\t%u points.\n", player_get_num(player1), 
+                                                    player_get_points(player1));
+            int c = get_option("Pick a card? Y/N: ");
+            while (c != 'Y' && c != 'y' && c != 'N' && c != 'n')
+                c = get_option("Pick a card? S/N:  ");
+
+            if (c == 'Y' || c == 'y') {
+                card_taken = player_take_card(player1, deck);
+                printf("Player %u picked ", player_get_num(player1)); 
+                card_show(card_taken);
+
+                if (player_get_points(player1) >= 21)
+                    break;
+            
+            } else {
+                player_set_still_playing(player1, false);
+                if (player_get_points(player2) > player_get_points(player1))
+                    break;
+            }
+        }
+
+        if (player_is_still_playing(player2)) {
+            printf("\nPlayer %u turn.\t%u points.\n", player_get_num(player2), 
+                                                    player_get_points(player2));
+            int c = get_option("Pick a card? Y/N: ");
+            while (c != 'Y' && c != 'y' && c != 'N' && c != 'n')
+                c = get_option("Pick a card? Y/N  ");
+
+            if (c == 'Y' || c == 'y') {
+                card_taken = player_take_card(player2, deck);
+                printf("Player %u picked ", player_get_num(player2)); 
+                card_show(card_taken);
+
+                if (player_get_points(player2) >= 21)
+                    break;
+            
+            } else {
+                player_set_still_playing(player2, false);
+                if (player_get_points(player1) > player_get_points(player2))
+                    break;
+            }
+        }
+
+        if (player_is_still_playing(player1) == false && 
+            player_get_points(player2) > player_get_points(player1))
+            break;
+
+        if (player_is_still_playing(player2) == false && 
+            player_get_points(player1) > player_get_points(player2))
+            break;
+    }
+
+    unsigned int points_player1 = player_get_points(player1);
+    unsigned int points_player2 = player_get_points(player2);
+
+    printf("\nPlayer 1: %d\n", points_player1);
+    printf("Player 2: %d\n", points_player2);
+
+    player_t *winner = NULL;
+    if (points_player1 > 21) winner = player2;
+
+    else if (points_player2 > 21) winner = player1;
+
+    else if (points_player1 > points_player2) winner = player1;
+
+    else if (points_player2 > points_player1) winner = player2;
+
+    if (winner == NULL) printf("It's a draw!\n");
+    else printf("\n\nWinner: Player %d.\n" + player_get_num(winner));
 
     deck_destroy(deck);
     player_destroy(player1);
+    player_destroy(player2);
     return 0;
+}
+
+int get_option(char *msg) {
+    printf("%s", msg);
+    
+    int c = getchar();
+    while (c == '\n') {
+        printf("%s", msg);
+        c = getchar(); 
+    }
+    while (getchar() != '\n');
+
+    return c;
 }
