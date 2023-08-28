@@ -5,12 +5,14 @@
 struct player {
     card_t **hand;
     size_t cards_in_hand;
+    unsigned int num;
     unsigned int points;
     unsigned int wins;
     unsigned int loses;
+    bool is_still_playing;
 };
 
-player_t *player_construct() {
+player_t *player_construct(unsigned int num) {
     player_t *player = malloc(sizeof(player_t));
     if (player == NULL) return NULL;
 
@@ -20,10 +22,12 @@ player_t *player_construct() {
         return NULL;
     }
 
+    player->num = num;
     player->cards_in_hand = 0;
     player->points = 0;
     player->wins = 0;
     player->loses = 0;
+    player->is_still_playing = true;
 
     return player;
 }
@@ -35,12 +39,24 @@ void player_destroy(player_t *player) {
     free(player);
 }
 
+unsigned int player_get_num(player_t *player) {
+    return player->num;
+}
+
 unsigned int player_get_points(player_t *player) {
     return player->points;
 }
 
 unsigned int player_get_wins(player_t *player);
 unsigned int player_get_loses(player_t *player);
+
+bool player_is_still_playing(player_t *player) {
+    return player->is_still_playing;
+}
+
+void player_set_still_playing(player_t *player, bool still_playing) {
+    player->is_still_playing = still_playing;
+}
 
 card_t *player_take_card(player_t *player, deck_t *deck) {
     if (deck_is_empty(deck)) return NULL;
@@ -64,8 +80,6 @@ card_t *player_take_card(player_t *player, deck_t *deck) {
 
     return card_taken;
 }
-
-unsigned int player_sum_points(player_t *player);
 
 void player_show_hand(player_t *player) {
     for (size_t i = 0; i < player->cards_in_hand; i++) {
