@@ -12,14 +12,8 @@ struct blackjack {
 };
 
 blackjack_t *blackjack_new_game(player_t **players, size_t players_qty, deck_t *deck) {
-    blackjack_t *blackjack = malloc(sizeof(blackjack_t *));
+    blackjack_t *blackjack = malloc(sizeof(blackjack_t));
     if(blackjack == NULL) return NULL;
-
-    blackjack->players = malloc(sizeof(player_t *) * players_qty);   
-    if(blackjack->players == NULL) {
-        free(blackjack);
-        return NULL;
-    }
 
     blackjack->players = players;
     blackjack->deck = deck;
@@ -107,6 +101,11 @@ player_t *_get_winner(blackjack_t *blackjack) {
     else return winner;
 }
 
+void _clean_buffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
 int _get_option(char *msg) {
     printf("%s", msg);
     
@@ -115,7 +114,8 @@ int _get_option(char *msg) {
         printf("%s", msg);
         c = getchar(); 
     }
-    while (getchar() != '\n');
+
+    _clean_buffer();
 
     return c;
 }
@@ -131,7 +131,7 @@ void _turn(player_t *player, deck_t *deck) {
                                             player_get_points(player));
     int c = _get_option("Pick a card? Y/N: ");
     while (c != 'Y' && c != 'y' && c != 'N' && c != 'n')
-        c = _get_option("Pick a card? Y/N:  ");
+        c = _get_option("Pick a card? Y/N: ");
 
     if (c == 'Y' || c == 'y') {
         card_t *card_taken = player_take_card(player, deck);
