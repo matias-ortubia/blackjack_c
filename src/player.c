@@ -73,7 +73,7 @@ card_t *player_take_card(player_t *player, deck_t *deck) {
     if (card_taken_value == 11 || card_taken_value == 12 || card_taken_value == 13)
         card_taken_value = 10;
     else if (card_taken_value == 1) {
-        if (player->points + 11 < 21)
+        if (player->points + 11 <= 21)
             card_taken_value = 11;
     }
     player->points += card_taken_value;
