@@ -36,6 +36,7 @@ void player_destroy(player_t *player) {
     for (size_t i = 0; i < player->cards_in_hand; i++) {
         card_destroy(player->hand[i]);
     }
+    free(player->hand);
     free(player);
 }
 
@@ -46,9 +47,6 @@ unsigned int player_get_num(player_t *player) {
 unsigned int player_get_points(player_t *player) {
     return player->points;
 }
-
-unsigned int player_get_wins(player_t *player);
-unsigned int player_get_loses(player_t *player);
 
 bool player_is_still_playing(player_t *player) {
     return player->is_still_playing;
@@ -65,7 +63,10 @@ card_t *player_take_card(player_t *player, deck_t *deck) {
     if (temp_hand == NULL) return NULL;
 
     player->hand = temp_hand;
+
     card_t *card_taken = deck_pop(deck);
+    if (card_taken == NULL) return NULL;
+
     player->hand[player->cards_in_hand] = card_taken;
     player->cards_in_hand++;
 

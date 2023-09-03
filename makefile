@@ -12,7 +12,7 @@ OBJECTS = $(OBJ_DIR)/main.o\
 	  $(OBJ_DIR)/player.o\
 	  $(OBJ_DIR)/blackjack.o\
 
-TARGET = $(BIN_DIR)/blackjack.exe
+TARGET = $(BIN_DIR)/blackjack
 
 all: $(TARGET)
 

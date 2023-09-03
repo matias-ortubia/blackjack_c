@@ -120,13 +120,17 @@ int _get_option(char *msg) {
     return c;
 }
 
-void _initial_turn(player_t *player, deck_t *deck) {
+bool _initial_turn(player_t *player, deck_t *deck) {
     card_t *card_taken = player_take_card(player, deck);
+    if (card_taken == NULL) return false;
+
     printf("Player %d picked ", player_get_num(player));
     card_show(card_taken);
+
+    return true;
 }
 
-void _turn(player_t *player, deck_t *deck) {
+bool _turn(player_t *player, deck_t *deck) {
     printf("\nPlayer %u turn.\t%u points.\n", player_get_num(player), 
                                             player_get_points(player));
     int c = _get_option("Pick a card? Y/N: ");
@@ -135,11 +139,15 @@ void _turn(player_t *player, deck_t *deck) {
 
     if (c == 'Y' || c == 'y') {
         card_t *card_taken = player_take_card(player, deck);
+        if (card_taken == NULL) return false;
+
         printf("Player %u picked ", player_get_num(player)); 
         card_show(card_taken);
     }
 
     else player_set_still_playing(player, false);
+
+    return true;
 }
 
 void blackjack_show_all_points(blackjack_t *blackjack) {
@@ -155,17 +163,20 @@ void blackjack_show_winner(player_t *winner) {
     else printf("\nWinner: Player %d!\n", player_get_num(winner));
 }
 
-void blackjack_start(blackjack_t *blackjack) {
+bool blackjack_start(blackjack_t *blackjack) {
     deck_shuffle(blackjack->deck);
 
     for (size_t i = 0; i < blackjack->players_qty; i++)
-        _initial_turn(blackjack->players[i], blackjack->deck);
+        if (_initial_turn(blackjack->players[i], blackjack->deck) == false)
+            return false;
 
     while (blackjack->is_game_over == false) {
         for (size_t i = 0; i < blackjack->players_qty; i++) {
             player_t *player = blackjack->players[i];
+
             if (player_is_still_playing(player)) {
-                _turn(player, blackjack->deck);
+                if (_turn(player, blackjack->deck) == false) return false;
+
                 if (player_get_points(player) >= 21) 
                     player_set_still_playing(player, false);
             }
@@ -179,4 +190,6 @@ void blackjack_start(blackjack_t *blackjack) {
 
     blackjack_show_all_points(blackjack);
     blackjack_show_winner(_get_winner(blackjack));
+
+    return true;
 }
