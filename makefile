@@ -10,8 +10,9 @@ OBJECTS = $(OBJ_DIR)/main.o\
 	  $(OBJ_DIR)/card.o\
 	  $(OBJ_DIR)/deck.o\
 	  $(OBJ_DIR)/player.o\
+	  $(OBJ_DIR)/blackjack.o\
 
-TARGET = $(BIN_DIR)/blackjack.exe
+TARGET = $(BIN_DIR)/blackjack
 
 all: $(TARGET)
 
@@ -31,7 +32,12 @@ $(OBJ_DIR)/player.o: $(SRC_DIR)/player.c $(INC_DIR)/player.h $(INC_DIR)/deck.h
 	mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/player.c -o $@
 
-$(OBJ_DIR)/main.o: $(SRC_DIR)/main.c $(INC_DIR)/card.h
+$(OBJ_DIR)/blackjack.o: $(SRC_DIR)/blackjack.c $(INC_DIR)/blackjack.h $(INC_DIR)/player.h $(INC_DIR)/deck.h 
+	mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/blackjack.c -o $@
+
+
+$(OBJ_DIR)/main.o: $(SRC_DIR)/main.c $(INC_DIR)/card.h $(INC_DIR)/blackjack.h
 	mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/main.c -o $@
 

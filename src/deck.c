@@ -42,30 +42,32 @@ void deck_destroy(deck_t *deck) {
     for (size_t i = 0; i < card_amount; i++) {
         card_destroy(deck->cards[i]);
     }
+    free(deck->cards);
     free(deck);
 }
 
 card_t *deck_pop(deck_t *deck) {
     if (deck->size == 0) return NULL;
 
-    deck->size--;
-    
-    card_t *card = deck->cards[deck->size];
+    card_t *card = deck->cards[deck->size - 1];
 
-    card_t **temp = realloc(deck->cards, sizeof(card_t *) * deck->size);
+    card_t **temp = realloc(deck->cards, sizeof(card_t *) * (deck->size - 1));
     if (temp == NULL) return NULL;
     deck->cards = temp;
+
+    deck->size--;
 
     return card;
 }
 
 card_t *deck_push(deck_t *deck, card_t *card) {
-    deck->size++;
-    card_t **temp = realloc(deck->cards, sizeof(card_t *) * deck->size);
+    card_t **temp = realloc(deck->cards, sizeof(card_t *) * (deck->size + 1));
     if (temp == NULL) return NULL;
 
     deck->cards = temp;
-    deck->cards[deck->size - 1] = card;
+    deck->cards[deck->size] = card;
+
+    deck->size++;
 
     return card;
 }
